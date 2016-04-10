@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/EmmanuelJucaban/YelpCamp#readme",
   "dependencies": {
+    "ejs": "^2.4.1",
     "express": "^4.13.4"
   }
 }
