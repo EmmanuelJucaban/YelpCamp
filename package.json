@@ -1,0 +1,22 @@
+{
+  "name": "yelpcamp",
+  "version": "1.0.0",
+  "description": "A project I worked on for an online bootcamp course",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmmanuelJucaban/YelpCamp.git"
+  },
+  "author": "Emmanuel Jucaban",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EmmanuelJucaban/YelpCamp/issues"
+  },
+  "homepage": "https://github.com/EmmanuelJucaban/YelpCamp#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
