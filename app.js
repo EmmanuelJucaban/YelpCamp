@@ -2,6 +2,7 @@ var PORT = process.env.PORT || 3000;
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var Campground = require('./models/campground');
 
 mongoose.connect('mongodb://localhost/yelpcamp');
 var app = express();
@@ -12,15 +13,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Sets the view engine to ejs
 app.set('view engine', 'ejs');
 
-//SChema setup
-var campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description: String
-});
-
-
-var Campground = mongoose.model('Campground', campgroundSchema);
 
 
 
