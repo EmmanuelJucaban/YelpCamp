@@ -6,15 +6,15 @@ var Comment = require('./models/comment');
 var data = [{
     name: 'Cloud\'s Rest',
     image: 'https://farm2.staticflickr.com/1281/4684194306_18ebcdb01c.jpg',
-    description: 'blah blah blah'
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mi orci, cursus non metus ac, feugiat gravida nisl. Nunc a dapibus leo. Pellentesque dolor lectus, auctor sit amet magna sit amet, porta rutrum mauris. Integer eget condimentum turpis, non mollis mauris.'
 }, {
     name: 'Lala Land',
     image: 'https://farm9.staticflickr.com/8422/7842069486_c61e4c6025.jpg',
-    description: 'blah blah blah'
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mi orci, cursus non metus ac, feugiat gravida nisl. Nunc a dapibus leo. Pellentesque dolor lectus, auctor sit amet magna sit amet, porta rutrum mauris. Integer eget condimentum turpis, non mollis mauris.'
 }, {
     name: 'The Bubble',
     image: 'https://farm5.staticflickr.com/4048/4661960920_a9bd6d972f.jpg',
-    description: 'blah blah blah'
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus mi orci, cursus non metus ac, feugiat gravida nisl. Nunc a dapibus leo. Pellentesque dolor lectus, auctor sit amet magna sit amet, porta rutrum mauris. Integer eget condimentum turpis, non mollis mauris.'
 }];
 
 function seedDB(){
