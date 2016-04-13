@@ -14,7 +14,7 @@ var app = express();
 
 // Set up body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.static(__dirname +'/public'));
 // Sets the view engine to ejs
 app.set('view engine', 'ejs');
 
