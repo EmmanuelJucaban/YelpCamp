@@ -33,11 +33,28 @@ app.use(require('express-session')({
     saveUninitialized: false
 }));
 
+// Check if logged in middleware
+var isLoggedIn = function(req, res, next){
+    if(req.isAuthenticated){
+        return next();
+    } else {
+        res.redirect('/login');
+    }
+};
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate())); // the .authenticate comes from the local strategy we added in user model
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+
+// Runs for every single route so currentUser is saved as a global variable.
+app.use(function(req, res, next){
+    res.locals.currentUser = req.user;
+    next();
+})
+
 
 // Landing page
 app.get('/', function(req, res) {
@@ -45,15 +62,17 @@ app.get('/', function(req, res) {
 });
 
 
+//=================
+// CAMPGROUND ROUTES
+//=================
 
-
-// Campground link
+// INDEX - shows all campgrounds
 app.get('/campgrounds', function(req, res) {
     Campground.find({}, function(err, campgrounds) {
         if (err) {
             console.log(err);
         } else {
-            res.render('campgrounds/index', { campgrounds: campgrounds });
+            res.render('campgrounds/index', { campgrounds: campgrounds, currentUser: req.user });
         }
     });
 });
@@ -101,7 +120,7 @@ app.get('/campgrounds/:id', function(req, res) {
 // ================================
 // Comment routes
 // ================================ 
-app.get('/campgrounds/:id/comments/new', function(req, res) {
+app.get('/campgrounds/:id/comments/new', isLoggedIn, function(req, res) {
     Campground.findById(req.params.id, function(err, campground) {
         if (err) {
             console.log(err);
@@ -111,7 +130,7 @@ app.get('/campgrounds/:id/comments/new', function(req, res) {
     });
 });
 
-app.post('/campgrounds/:id/comments', function(req, res) {
+app.post('/campgrounds/:id/comments', isLoggedIn, function(req, res) {
     Campground.findById(req.params.id, function(err, campground) {
         if (err) {
             console.log(err);
@@ -168,6 +187,13 @@ app.post('/login', passport.authenticate('local',
         successRedirect: '/campgrounds',
         failureRedirect: '/login'
     }), function(req, res){
+});
+
+
+// Logout route
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/campgrounds');
 });
 
 // Connect to server
