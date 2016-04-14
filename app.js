@@ -10,23 +10,40 @@ var PORT              = process.env.PORT || 3000,
     seedDB            = require('./seed')
 
 
-seedDB();
 
 mongoose.connect('mongodb://localhost/yelpcamp');
 var app = express();
 
+// Set up body-parser
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Sets the view engine to ejs
+app.set('view engine', 'ejs');
+
+app.use(express.static(__dirname + '/public'));
+
+seedDB();
+
+//=============
+// PASSPORT CONFIGURATION
+//=============
+app.use(require('express-session')({
+    secret: "I'm gonna be a fullstack software engineer!",
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate())); // the .authenticate comes from the local strategy we added in user model
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Landing page
 app.get('/', function(req, res) {
     res.render('landing');
 });
 
-
-// Set up body-parser
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/public'));
-// Sets the view engine to ejs
-app.set('view engine', 'ejs');
 
 
 
@@ -112,6 +129,46 @@ app.post('/campgrounds/:id/comments', function(req, res) {
         }
     });
 })
+
+
+
+// =============
+// AUTH ROUTES
+// =============
+
+//Show register form
+app.get('/register', function(req, res){
+    res.render('register');
+});
+
+
+// Handle signup logic
+app.post('/register', function(req, res){
+    var newUser = new User({username: req.body.username})
+    User.register(newUser, req.body.password, function(err, user){
+        if(err){
+            console.log(err);
+            return res.render('register');
+        } else {
+            passport.authenticate('local')(req, res, function(){ // makes a call to line 38
+                res.redirect('/campgrounds');
+            })
+        }
+    });
+});
+
+// Show login form
+app.get('/login', function(req, res){
+    res.render('login');
+});
+
+// Handle Login Logic
+app.post('/login', passport.authenticate('local',
+    {
+        successRedirect: '/campgrounds',
+        failureRedirect: '/login'
+    }), function(req, res){
+});
 
 // Connect to server
 app.listen(PORT, process.env.IP, function() {
