@@ -2,6 +2,16 @@ var express = require('express');
 var router = express.Router();
 var Campground = require('../models/campground');
 
+
+// middleware
+var isLoggedIn = function(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    } else {
+        res.redirect('/login');
+    }
+};
+
 // INDEX - shows all campgrounds
 router.get('/', function(req, res) {
     Campground.find({}, function(err, campgrounds) {
@@ -15,15 +25,9 @@ router.get('/', function(req, res) {
 
 
 
-// Show add campground form
-router.get('/new', function(req, res) {
-    res.render('new');
-});
-
-
 
 // To post a campground
-router.post('/', function(req, res) {
+router.post('/', isLoggedIn, function(req, res) {
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
@@ -32,9 +36,15 @@ router.post('/', function(req, res) {
         if (err) {
             console.log(err);
         } else {
-            res.redirect('campgrounds');
+            res.redirect('/campgrounds');
         }
     });
+});
+
+
+// Show add campground form
+router.get('/new', function(req, res) {
+    res.render('campgrounds/new');
 });
 
 
