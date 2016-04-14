@@ -56,7 +56,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-// Runs for every single route so currentUser is saved as a global variable.
+// Runs for every single route so currentUser is saved as a global variable to every template as well
 app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     next();
