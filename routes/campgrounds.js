@@ -67,4 +67,26 @@ router.get('/:id', isLoggedIn, function(req, res) {
 });
 
 
+// EDIT CAMPGROUND ROUTE
+router.get('/:id/edit', function(req, res){
+    Campground.findById(req.params.id, function(err, foundCampground){
+        if(err){
+            res.redirect('campgrounds');
+        } else {
+            res.render('campgrounds/edit', {campground: foundCampground});
+        }
+    });
+});
+
+// UPDATE CAMPGROUND ROUTE
+router.put('/:id', function(req, res){
+    // I can do req.body.campground because I wrapped everything up in the name form
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
+        if(err){
+            res.redirect('/campgrounds');
+        }else {
+            res.redirect('/campgrounds/' + req.params.id);
+        }
+    })
+});
 module.exports = router;
