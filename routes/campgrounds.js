@@ -31,7 +31,12 @@ router.post('/', isLoggedIn, function(req, res) {
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
-    var newCampground = { name: name, image: image, description: description };
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    var newCampground = { name: name, image: image, description: description, author: author };
+    // Create new campground ans save to DB
     Campground.create(newCampground, function(err, campground) {
         if (err) {
             console.log(err);
@@ -42,15 +47,15 @@ router.post('/', isLoggedIn, function(req, res) {
 });
 
 
-// Show add campground form
-router.get('/new', function(req, res) {
+// NEW - show form to create new campground form
+router.get('/new', isLoggedIn , function(req, res) {
     res.render('campgrounds/new');
 });
 
 
 
 // SHOW - shows more info about one campground
-router.get('/:id', function(req, res) {
+router.get('/:id', isLoggedIn, function(req, res) {
     Campground.findById(req.params.id).populate('comments').exec(function(err, foundCampground) {
         if (err) {
             console.log(err);
