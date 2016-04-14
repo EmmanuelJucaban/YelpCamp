@@ -1,10 +1,13 @@
-var PORT = process.env.PORT || 3000;
-var express = require('express');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var Campground = require('./models/campground');
-var Comment = require('./models/comment');
-var seedDB = require('./seed');
+var PORT              = process.env.PORT || 3000,
+    express           = require('express'),
+    bodyParser        = require('body-parser'),
+    mongoose          = require('mongoose'),
+    passport          = require('passport'),
+    LocalStrategy     = require('passport-local'),
+    Campground        = require('./models/campground'),
+    Comment           = require('./models/comment'),
+    User              = require('./models/user'),
+    seedDB            = require('./seed')
 
 
 seedDB();
@@ -12,19 +15,19 @@ seedDB();
 mongoose.connect('mongodb://localhost/yelpcamp');
 var app = express();
 
-// Set up body-parser
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname +'/public'));
-// Sets the view engine to ejs
-app.set('view engine', 'ejs');
-
-
-
 
 // Landing page
 app.get('/', function(req, res) {
     res.render('landing');
 });
+
+
+// Set up body-parser
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(__dirname + '/public'));
+// Sets the view engine to ejs
+app.set('view engine', 'ejs');
+
 
 
 // Campground link
@@ -82,23 +85,23 @@ app.get('/campgrounds/:id', function(req, res) {
 // Comment routes
 // ================================ 
 app.get('/campgrounds/:id/comments/new', function(req, res) {
-    Campground.findById(req.params.id, function(err, campground){
-        if(err){
+    Campground.findById(req.params.id, function(err, campground) {
+        if (err) {
             console.log(err);
         } else {
-            res.render('comments/new', {campground: campground});
+            res.render('comments/new', { campground: campground });
         }
     });
 });
 
-app.post('/campgrounds/:id/comments', function(req, res){
-    Campground.findById(req.params.id, function(err, campground){
-        if(err){
+app.post('/campgrounds/:id/comments', function(req, res) {
+    Campground.findById(req.params.id, function(err, campground) {
+        if (err) {
             console.log(err);
             res.redirect('/campgrounds');
         } else {
-            Comment.create(req.body.comment, function(err, comment){
-                if(err){
+            Comment.create(req.body.comment, function(err, comment) {
+                if (err) {
                     console.log(err);
                 } else {
                     campground.comments.push(comment);
