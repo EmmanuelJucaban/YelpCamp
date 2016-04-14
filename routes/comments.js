@@ -1,12 +1,12 @@
 var express = require('express');
-var router = express.Router({mergeParams: true}); // merge the params from campground and
+var router = express.Router({ mergeParams: true }); // merge the params from campground and
 var Campground = require('../models/campground');
 var Comment = require('../models/comment');
 
 
 // middleware
-var isLoggedIn = function(req, res, next){
-    if(req.isAuthenticated()){
+var isLoggedIn = function(req, res, next) {
+    if (req.isAuthenticated()) {
         return next();
     } else {
         res.redirect('/login');
@@ -53,5 +53,26 @@ router.post('/', isLoggedIn, function(req, res) {
 
 
 
+// COMMENT EDIT ROUTE
+router.get('/:comment_id/edit', function(req, res) {
+    Comment.findById(req.params.comment_id, function(err, foundComment) {
+        if (err) {
+            res.redirect('back');
+        } else {
+            res.render('comments/edit', { campground_id: req.params.id, comment: foundComment });
+        }
+    });
+});
+
+// COMMENT UPDATE ROUTE
+router.put('/:comment_id', function(req, res) {
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment) {
+        if (err){
+        	res.redirect('back');
+        } else {
+        	res.redirect('/campgrounds/' + req.params.id);
+        }
+    });
+});
 
 module.exports = router;
