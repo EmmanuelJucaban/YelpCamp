@@ -1,148 +1,54 @@
-var PORT              = process.env.PORT || 3000,
-    express           = require('express'),
-    bodyParser        = require('body-parser'),
-    mongoose          = require('mongoose'),
-    passport          = require('passport'),
-    LocalStrategy     = require('passport-local'),
-    methodOverride    = require('method-override'),
-    Campground        = require('./models/campground'),
-    Comment           = require('./models/comment'),
-    User              = require('./models/user'),
-    seedDB            = require('./seed');
+var PORT        = process.env.PORT || 3000,
+    express     = require("express"),
+    app         = express(),
+    bodyParser  = require("body-parser"),
+    mongoose    = require("mongoose"),
+    flash       = require("connect-flash"),
+    passport    = require("passport"),
+    LocalStrategy = require("passport-local"),
+    methodOverride = require("method-override"),
+    Campground  = require("./models/campground"),
+    Comment     = require("./models/comment"),
+    User        = require("./models/user"),
+    seedDB      = require("./seed")
+    
+//requiring routes
+var commentRoutes    = require("./routes/comments"),
+    campgroundRoutes = require("./routes/campgrounds"),
+    indexRoutes      = require("./routes/index")
+    
+mongoose.connect("mongodb://localhost/yelp_camp_v10");
+app.use(bodyParser.urlencoded({extended: true}));
+app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
+app.use(flash());
+// seedDB(); //seed the database
 
-
-// requiring Routes
-
-var commentRoutes   = require('./routes/comments'),
-    campgroundRoutes = require('./routes/campgrounds'),
-    indexRoutes      = require('./routes/index');
-
-
-mongoose.connect('mongodb://localhost/yelpcamp');
-var app = express();
-
-// Set up body-parser
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Sets the view engine to ejs
-app.set('view engine', 'ejs');
-
-app.use(express.static(__dirname + '/public'));
-app.use(methodOverride('_method'));
-// seedDB(); // seed the database
-
-//=============
 // PASSPORT CONFIGURATION
-//=============
-app.use(require('express-session')({
-    secret: "I'm gonna be a fullstack software engineer!",
+app.use(require("express-session")({
+    secret: "Once again Rusty wins cutest dog!",
     resave: false,
     saveUninitialized: false
 }));
-
-// Check if logged in middleware
-var isLoggedIn = function(req, res, next){
-    if(req.isAuthenticated){
-        return next();
-    } else {
-        res.redirect('/login');
-    }
-};
-
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate())); // the .authenticate comes from the local strategy we added in user model
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
-// Runs for every single route so currentUser is saved as a global variable to every template as well
 app.use(function(req, res, next){
-    res.locals.currentUser = req.user;
-    next();
-})
-
-
-
-
-app.use('/', indexRoutes);
-app.use('/campgrounds', campgroundRoutes); // appends /campgrounds to every route in the route file
-app.use('/campgrounds/:id/comments', commentRoutes); // appends the 1st parameter to every single route file
-
-
-// Landing page
-app.get('/', function(req, res) {
-    res.render('landing');
+   res.locals.currentUser = req.user;
+   res.locals.error = req.flash("error");
+   res.locals.success = req.flash("success");
+   next();
 });
 
-
-// Campground link
-app.get('/campgrounds', function(req, res) {
-    Campground.find({}, function(err, campgrounds) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render('campgrounds/index', { campgrounds: campgrounds });
-        }
-    });
-});
+app.use("/", indexRoutes);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/comments", commentRoutes);
 
 
-
-// Show add campground form
-app.get('/campgrounds/new', function(req, res) {
-    res.render('campgrounds/new');
-});
-
-
-
-// To post a campground
-app.post('/campgrounds', function(req, res) {
-    var name = req.body.name;
-    var image = req.body.image;
-    var description = req.body.description;
-    var newCampground = { name: name, image: image, description: description };
-    Campground.create(newCampground, function(err, campground) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect('campgrounds');
-        }
-    });
-});
-
-
-
-// SHOW - shows more info about one campground
-app.get('/campgrounds/:id', function(req, res) {
-    Campground.findById(req.params.id).populate('comments').exec(function(err, foundCampground) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(foundCampground);
-            res.render('campgrounds/show', { campground: foundCampground });
-        }
-    });
-});
-
-
-
-// ================================
-// Comment routes
-// ================================ 
-app.get('/campgrounds/:id/comments/new', function(req, res) {
-    Campground.findById(req.params.id, function(err, campground){
-        if(err){
-            console.log(err);
-        } else {
-            res.render('comments/new', {campground: campground});
-        }
-    });
-});
-
-
-
-// Connect to server
-app.listen(PORT, process.env.IP, function() {
-    console.log('Yelpcamp has started');
+app.listen(PORT, process.env.IP, function(){
+   console.log("The YelpCamp Server Has Started!");
 });

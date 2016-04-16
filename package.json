@@ -1,30 +1,23 @@
 {
-  "name": "yelpcamps",
+  "name": "v1",
   "version": "1.0.0",
-  "description": "A project I worked on for an online bootcamp course",
+  "description": "YelpCamp v1",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EmmanuelJucaban/YelpCamp.git"
-  },
-  "author": "Emmanuel Jucaban",
+  "author": "Colt Steele",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/EmmanuelJucaban/YelpCamp/issues"
-  },
-  "homepage": "https://github.com/EmmanuelJucaban/YelpCamp#readme",
   "dependencies": {
-    "body-parser": "^1.15.0",
-    "ejs": "^2.4.1",
-    "express": "^4.13.4",
-    "express-session": "^1.13.0",
+    "body-parser": "^1.14.1",
+    "connect-flash": "^0.1.1",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "express-session": "^1.11.3",
     "method-override": "^2.3.5",
-    "mongoose": "^4.4.12",
-    "passport": "^0.3.2",
+    "mongoose": "^4.1.12",
+    "passport": "^0.3.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^4.0.0"
+    "passport-local-mongoose": "^3.1.0"
   }
 }
